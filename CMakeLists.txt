@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.14 FATAL_ERROR)
 
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dist)
+
 # create project
 project(Mandlebrot)
 
@@ -12,7 +16,3 @@ target_link_libraries (Mandlebrot ${PNG_LIBRARIES})
 
 find_package(ZLIB REQUIRED)
 target_link_libraries (Mandlebrot ZLIB::ZLIB)
-
-# link dependencies
-target_link_libraries(Mandlebrot libpng)
-target_link_libraries(Mandlebrot zlib)
