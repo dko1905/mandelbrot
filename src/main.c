@@ -154,8 +154,8 @@ int main()
 
 	/* Create an image. */
 
-	fruit.width = 100;
-	fruit.height = 100;
+	fruit.width = 500;
+	fruit.height = 500;
 
 	fruit.pixels = calloc(fruit.width * fruit.height, sizeof(pixel_t));
 
