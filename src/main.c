@@ -154,8 +154,8 @@ int main()
 
 	/* Create an image. */
 
-	fruit.width = 500;
-	fruit.height = 500;
+	fruit.width = 1920;
+	fruit.height = 1080;
 
 	fruit.pixels = calloc(fruit.width * fruit.height, sizeof(pixel_t));
 
@@ -171,6 +171,7 @@ int main()
 			pixel_t *pixel = pixel_at(&fruit, x, y);
 			pixel->red = pix(x, fruit.width);
 			pixel->green = pix(y, fruit.height);
+			pixel->blue = 200;
 		}
 	}
 
