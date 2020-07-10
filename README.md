@@ -20,10 +20,10 @@ $ nmake .
 **Using mingw**
 
 ## Usage
-The program is still WIP so there is no argument parsing, except license. The program is required to print license, by the bsd license.
-```
-$ Mandlebrot l
-```
+./mandelbrot <option> <args>
+options:
+gpng <filename> <WIDTHxHEIGHT> <x_offset> <y_offset> <scale (400 for HD)> <iterations> <color mode 0-1>
+gterm <WIDTHxHEIGHT> <x_offset> <y_offset> <scale (400 for HD)> <iterations>
 
 ## Examples
 35 iterations: 0.55s
