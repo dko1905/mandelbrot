@@ -22,5 +22,12 @@ The program is still WIP so there is no argument parsing, except license. The pr
 $ Mandlebrot l
 ```
 
+## Examples
+35 iterations: 0.55s
+10000 iterations: 41.67s
+
+Here is the 35 iterations example:
+![image of mandelbrot](doc_image.png)
+
 ## License
 [BSD 2 Clause](LICENSE)
