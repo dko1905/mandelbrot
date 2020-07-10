@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 #include "pngtools.h"
 #include "generators.h"
@@ -14,18 +15,55 @@ int main(int argc, char* argv[]){
 	}
 
 	/* Arguments:
+	n | gterm					| gpng
 	1 - command/option
-	2 - WIDTHxHEIGHT
-	3 - x offset
-	4 - y offset
-
+	2 - WIDTHxHEIGHT 	- filename
+	3 - x offset			- WIDTHxHEIGHT
+	4 - y offset			- x offset
+	5 - scale					- y offset
+	6 - iterations		- scale
+	7 - color mode		- iterations
+	8 - none					- Color mode
 	*/
 
 	switch(argv[1][0]){
-		case 'l':
+		case 'l': /* License */
 			print_license();
 			break;
-		case 'p':
+		case 'g': ;/* Generate */
+			int width, height;
+			f64 x_offset, y_offset, scale;
+			size_t iterations;
+
+			if(strcmp(argv[1], "gpng") == 0){ /* Generate png image */
+				color_mode_t color_mode;
+				char filename[FILENAME_MAX]; // FILENAME_MAX defined in std
+
+				if(argc <= 8){
+					fprintf(stderr, "Invalid usage\n");
+					return 1;
+				}
+
+				strncpy(filename, argv[2], FILENAME_MAX);
+				sscanf(argv[3], "%dx%d", &width, &height);
+				x_offset = (f64)atof(argv[4]);
+				y_offset = (f64)atof(argv[5]);
+				scale = (f64)atof(argv[6]);
+				sscanf(argv[7], "%llu", (unsigned long long*)&iterations);
+				color_mode = (color_mode_t)atoi(argv[8]);
+
+				int r = graph_png(filename, width, height, x_offset, y_offset, scale, iterations, color_mode);
+				if(r < 0){
+					if(r == -2){
+						fprintf(stderr, "Failed to allocate memory\n");
+						return -2;
+					}
+					else{
+						perror("Unknown error");
+						return -1;
+					}
+				}
+			}
 			break;
 	}
 	
@@ -39,7 +77,8 @@ int main(int argc, char* argv[]){
 		0.0,
 		10.0,
 		35
-	);*/
+	);
+	*/
 
 	graph_png(
 		"output2.png",
