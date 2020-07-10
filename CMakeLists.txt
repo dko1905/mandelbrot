@@ -17,9 +17,15 @@ add_executable(Mandlebrot src/main.c src/pngtools.c src/generators.c src/hsv.c)
 
 target_link_libraries(Mandlebrot m) # Math.h
 
-find_package(PNG REQUIRED)
-include_directories(${PNG_INCLUDE_DIRS})
-target_link_libraries (Mandlebrot ${PNG_LIBRARIES})
 
-find_package(ZLIB REQUIRED)
-target_link_libraries (Mandlebrot ZLIB::ZLIB)
+
+find_package(PNG)
+if(PNG_FOUND)
+	include_directories(${PNG_INCLUDE_DIRS})
+	target_link_libraries (Mandlebrot ${PNG_LIBRARIES})
+else()
+	add_subdirectory("include/libpng")
+	find_package(PNG)
+	include_directories(${PNG_INCLUDE_DIRS})
+	target_link_libraries (Mandlebrot ${PNG_LIBRARIES})
+endif()
