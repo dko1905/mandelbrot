@@ -22,7 +22,7 @@ int main(int argc, char* argv[]){
 	4 - y offset			- x offset
 	5 - scale					- y offset
 	6 - iterations		- scale
-	7 - color mode		- iterations
+	7 - none					- iterations
 	8 - none					- Color mode
 	*/
 
@@ -63,6 +63,20 @@ int main(int argc, char* argv[]){
 						return -1;
 					}
 				}
+			}
+			if(strcmp(argv[1], "gterm") == 0){
+				if(argc <= 5){
+					fprintf(stderr, "Invalid usage\n");
+					return 1;
+				}
+
+				sscanf(argv[2], "%dx%d", &width, &height);
+				x_offset = (f64)atof(argv[3]);
+				y_offset = (f64)atof(argv[4]);
+				scale = (f64)atof(argv[5]);
+				sscanf(argv[6], "%llu", (unsigned long long*)&iterations);
+
+				graph_terminal(width, height, x_offset, y_offset, scale, iterations);
 			}
 			break;
 	}
