@@ -16,5 +16,11 @@ $ cmake "NMake Makefiles" .
 $ nmake .
 ```
 
+## Usage
+The program is still WIP so there is no argument parsing, except license. The program is required to print license, by the bsd license.
+```
+$ Mandlebrot l
+```
+
 ## License
 [BSD 2 Clause](LICENSE)
