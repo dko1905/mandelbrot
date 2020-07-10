@@ -30,4 +30,5 @@ int graph_terminal(graph_arguments_t args){
 		}
 		printf("\n");
 	}
+	return 0;
 }

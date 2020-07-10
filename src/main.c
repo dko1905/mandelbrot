@@ -5,16 +5,20 @@
 
 void print_license();
 
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]){
+	if(argc > 1 && argv[1][0] == 'l'){
+		print_license();
+		return 0;
+	}
+
 	graph_arguments_t args = {
 		.bitmap = NULL,
-		.height = 2,
-		.width = 2,
-		.scale = 1.0,
+		.height = 50,
+		.width = 80,
+		.scale = 20.0,
 		.x_offset = 0,
 		.y_offset= 0,
-		.step_max = 0
+		.step_max = 35
 	};
 
 	graph_terminal(args);
