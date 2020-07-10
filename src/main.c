@@ -23,13 +23,13 @@ int main(int argc, char* argv[]){
 	);*/
 
 	graph_png(
-		"output.png",
+		"output2.png",
 		1920,
 		1080,
 		0.0,
 		0.0,
 		400.0,
 		10000,
-		BLACKANDWHITE
+		HSV_1
 	);
 }

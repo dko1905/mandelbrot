@@ -83,10 +83,22 @@ int graph_png(char* filename, int width, int height, f64 x_offset, f64 y_offset,
 					pixel->green = 255;
 					pixel->blue = 255;
 				}
+				else if(color_mode == HSV_1){
+					int colors[3];
+					HSVtoRGB((steps * 10) % 255, 1, 1, colors);
+					pixel->red = colors[0];
+					pixel->green = colors[1];
+					pixel->blue = colors[2];
+				}
 			}
 			else{
 				pixel_t* pixel = pixel_at(&image, num_x, num_y);
 				if(color_mode == BLACKANDWHITE){
+					pixel->red = 0;
+					pixel->green = 0;
+					pixel->blue = 0;
+				}
+				else if(color_mode == HSV_1){
 					pixel->red = 0;
 					pixel->green = 0;
 					pixel->blue = 0;
