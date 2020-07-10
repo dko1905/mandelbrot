@@ -7,52 +7,17 @@ void print_license();
 
 int main(int argc, char* argv[])
 {
-	if(argc > 1 && argv[1][0] == 'l'){
-		print_license();
-		return 0;
-	}
+	graph_arguments_t args = {
+		.bitmap = NULL,
+		.height = 2,
+		.width = 2,
+		.scale = 1.0,
+		.x_offset = 0,
+		.y_offset= 0,
+		.step_max = 0
+	};
 
-	bitmap_t fruit;
-	int x;
-	int y;
-	int status;
-
-	status = 0;
-
-	/* Create an image. */
-
-	fruit.width = 1920;
-	fruit.height = 1080;
-
-	fruit.pixels = calloc(fruit.width * fruit.height, sizeof(pixel_t));
-
-	if (!fruit.pixels)
-	{
-		return -1;
-	}
-
-	for (y = 0; y < fruit.height; y++)
-	{
-		for (x = 0; x < fruit.width; x++)
-		{
-			pixel_t *pixel = pixel_at(&fruit, x, y);
-			pixel->red = x % 255;
-			pixel->green = y % 255;
-			pixel->blue = 200;
-		}
-	}
-
-	/* Write the image to a file 'fruit.png'. */
-
-	if (save_png_to_file(&fruit, "fruit.png"))
-	{
-		fprintf(stderr, "Error writing file.\n");
-		status = -1;
-	}
-
-	free(fruit.pixels);
-
-	return status;
+	graph_terminal(args);
 }
 
 void print_license(){

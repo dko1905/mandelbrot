@@ -5,8 +5,8 @@
 
 #include "pngtools.h"
 
-typedef long double f64;
-typedef _Complex long double complex_f64;
+typedef double f64;
+typedef _Complex double complex_f64;
 
 typedef struct {
 	int width, height;

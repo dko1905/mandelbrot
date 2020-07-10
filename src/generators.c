@@ -11,7 +11,23 @@ int graph_terminal(graph_arguments_t args){
 		for(size_t num_x = 0; num_x < args.width; ++num_x){
 			x = (f64)num_x / args.scale - (f64)args.width / 2. / args.scale + args.x_offset;
 
-			point = CMPLX(x, y);
+			point = x + y * I;
+			z = 0.0 + 0.0i;
+			steps = 0;
+
+			while(cabs(z) < 2.0 && steps < args.step_max){
+				z = z * z + point;
+				
+				++steps;
+			}
+
+			if(steps < args.step_max){
+				printf("#");
+			}
+			else{
+				printf(" ");
+			}
 		}
+		printf("\n");
 	}
 }
