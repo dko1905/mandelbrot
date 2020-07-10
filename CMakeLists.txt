@@ -15,6 +15,8 @@ endif()
 # add executable
 add_executable(Mandlebrot src/main.c src/pngtools.c src/generators.c)
 
+target_link_libraries(Mandlebrot m) # Math.h
+
 find_package(PNG REQUIRED)
 include_directories(${PNG_INCLUDE_DIRS})
 target_link_libraries (Mandlebrot ${PNG_LIBRARIES})
