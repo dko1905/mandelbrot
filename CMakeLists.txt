@@ -8,7 +8,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dist)
 project(Mandlebrot)
 
 # add executable
-add_executable(Mandlebrot src/main.c)
+add_executable(Mandlebrot src/main.c src/pngtools.c src/generators.c)
 
 find_package(PNG REQUIRED)
 include_directories(${PNG_INCLUDE_DIRS})
