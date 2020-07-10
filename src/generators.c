@@ -105,7 +105,9 @@ int graph_png(char* filename, int width, int height, f64 x_offset, f64 y_offset,
 				}
 			}
 		}
-		printf("%1.f%%\n", ((f64)num_y / (f64)height) * 100);
+		if(num_y % (height/100) == 0){
+			printf("%1.f%%\n", ((f64)num_y / (f64)height) * 100);
+		}
 	}
 
 	if (save_png_to_file (&image, filename)) {
