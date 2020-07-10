@@ -11,6 +11,7 @@ int main(int argc, char* argv[]){
 	/* Check for min argument count */
 	if(argc < 2){
 		fprintf(stderr, "Invalid usage\n");
+		print_usage();
 		return -1;
 	}
 
@@ -29,6 +30,9 @@ int main(int argc, char* argv[]){
 	switch(argv[1][0]){
 		case 'l': /* License */
 			print_license();
+			break;
+		case 'h':
+			print_usage();
 			break;
 		case 'g': ;/* Generate */
 			int width, height;
@@ -78,6 +82,9 @@ int main(int argc, char* argv[]){
 
 				graph_terminal(width, height, x_offset, y_offset, scale, iterations);
 			}
+			break;
+		default:
+			print_usage();
 			break;
 	}
 	
