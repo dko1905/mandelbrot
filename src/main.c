@@ -7,10 +7,29 @@
 void print_license();
 
 int main(int argc, char* argv[]){
-	if(argc > 1 && argv[1][0] == 'l'){
-		print_license();
-		return 0;
+	/* Check for min argument count */
+	if(argc < 2){
+		fprintf(stderr, "Invalid usage\n");
+		return -1;
 	}
+
+	/* Arguments:
+	1 - command/option
+	2 - WIDTHxHEIGHT
+	3 - x offset
+	4 - y offset
+
+	*/
+
+	switch(argv[1][0]){
+		case 'l':
+			print_license();
+			break;
+		case 'p':
+			break;
+	}
+	
+	return 0;
 
 	/*
 	graph_terminal( // Hate this giagantic list of arguments
