@@ -5,7 +5,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dist)
 
 # create project
-project(Mandlebrot)
+project(Mandlebrot C)
 
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   # Update if necessary
@@ -16,8 +16,6 @@ endif()
 add_executable(Mandlebrot src/main.c src/pngtools.c src/generators.c src/hsv.c)
 
 target_link_libraries(Mandlebrot m) # Math.h
-
-
 
 find_package(PNG)
 if(PNG_FOUND)
