@@ -13,7 +13,7 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID 
 endif()
 
 # add executable
-add_executable(Mandlebrot src/main.c src/pngtools.c src/generators.c)
+add_executable(Mandlebrot src/main.c src/pngtools.c src/generators.c src/hsv.c)
 
 target_link_libraries(Mandlebrot m) # Math.h
 

@@ -4,7 +4,6 @@
 #include "generators.h"
 #include "license.h"
 
-
 void print_license();
 
 int main(int argc, char* argv[]){
@@ -13,6 +12,7 @@ int main(int argc, char* argv[]){
 		return 0;
 	}
 
+	/*
 	graph_terminal( // Hate this giagantic list of arguments
 		80,
 		30,
@@ -20,5 +20,16 @@ int main(int argc, char* argv[]){
 		0.0,
 		10.0,
 		35
+	);*/
+
+	graph_png(
+		"output.png",
+		1920,
+		1080,
+		0.0,
+		0.0,
+		400.0,
+		10000,
+		BLACKANDWHITE
 	);
 }
