@@ -3,6 +3,7 @@ This is a mandelbrot generator written in c using libpng with zlib to create png
 
 ## Compiling
 You need to have cmake installed, and vs on win, and make/gcc on *nix.
+**Warning** If your system doesn't have libpng-devel installed, you should git clone with `--recursive` option.
 ### *nix
 This should compile it to the dist folder.
 ```
@@ -15,6 +16,8 @@ You need to vs and cmake installed, and you need to open cmd/powershell with vs 
 $ cmake "NMake Makefiles" .
 $ nmake .
 ```
+
+**Using mingw**
 
 ## Usage
 The program is still WIP so there is no argument parsing, except license. The program is required to print license, by the bsd license.
