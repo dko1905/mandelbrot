@@ -20,10 +20,10 @@ $ nmake .
 **Using mingw**
 
 ## Usage
-./mandelbrot <option> <args>
-options:
-gpng <filename> <WIDTHxHEIGHT> <x_offset> <y_offset> <scale (400 for HD)> <iterations> <color mode 0-1>
-gterm <WIDTHxHEIGHT> <x_offset> <y_offset> <scale (400 for HD)> <iterations>
+./mandelbrot <option> <args> <br/>
+options: <br/>
+gpng <filename> <WIDTHxHEIGHT> <x_offset> <y_offset> <scale (400 for HD)> <iterations> <color mode 0-1> <br/>
+gterm <WIDTHxHEIGHT> <x_offset> <y_offset> <scale (400 for HD)> <iterations> <br/>
 
 ## Examples
 35 iterations: 0.55s
