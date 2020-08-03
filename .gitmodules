@@ -1,3 +1,0 @@
-[submodule "include/libpng"]
-	path = include/libpng
-	url = https://github.com/glennrp/libpng.git
