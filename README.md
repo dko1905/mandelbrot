@@ -2,22 +2,14 @@
 This is a mandelbrot generator written in c using libpng with zlib to create png images.
 
 ## Compiling
-You need to have cmake installed, and vs on win, and make/gcc on *nix.
-**Warning** If your system doesn't have libpng-devel installed, you should git clone with `--recursive` option.
-### *nix
-This should compile it to the dist folder.
-```
-$ cmake .
-$ make
-```
-### Windows
-You need to vs and cmake installed, and you need to open cmd/powershell with vs tools. <br/>**I have not tested this.**
-```
-$ cmake "NMake Makefiles" .
-$ nmake .
-```
-
-**Using mingw**
+This program has libpng and zlib as dependencies. Here is a table:
+|              | libpng       | zlib       |
+|--------------|--------------|------------|
+| Ubuntu 20.04 | libpng-dev   | zlib1g-dev |
+| Void Linux   | libpng-devel | zlib-devel |
+You also need make and a compiler. To compile the program, you run the following command.
+`$ mkdir -p build && make`
+The command will compile into the build folder.
 
 ## Usage
 ./mandelbrot <option> <args> <br/>
