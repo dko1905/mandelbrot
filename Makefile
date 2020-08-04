@@ -1,4 +1,4 @@
-cc=gcc
+cc=cc
 cflags=-Wall -std=c99 -lm -lpng -lz 
 
 mandelbrot: main.o pngtools.o generators.o hsv.o
