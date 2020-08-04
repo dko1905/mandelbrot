@@ -12,7 +12,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Install dependencies
-      run: apt install libpng-dev zlib1g-dev gcc make -y
+      run: sudo apt install libpng-dev zlib1g-dev gcc make -y
     - name: make
       run: make
       
