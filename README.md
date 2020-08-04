@@ -3,10 +3,12 @@ This is a mandelbrot generator written in c using libpng with zlib to create png
 
 ## Compiling
 This program has libpng and zlib as dependencies. Here is a table:
-|              | libpng       | zlib       |
+
+| Distro       | libpng       | zlib       |
 |--------------|--------------|------------|
 | Ubuntu 20.04 | libpng-dev   | zlib1g-dev |
 | Void Linux   | libpng-devel | zlib-devel |
+
 You also need make and a compiler. To compile the program, you run the following command.
 `$ mkdir -p build && make`
 The command will compile into the build folder.
