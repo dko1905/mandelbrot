@@ -1,152 +1,314 @@
+#include <complex.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include "canvas.h"
-#include "renderer.h"
-#include "license.h"
+#include <math.h>
+#include <png.h>
+#include <stdint.h>
+#include <strings.h>
 
-#include "png.h"
+#ifdef __unix__
+#define PTHREAD_SUPPORTED 1
+#else
+#define PTHREAD_SUPPORTED 0
+#endif
+
+#if PTHREAD_SUPPORTED == 1
+#include <pthread.h>
+#endif
+
+void HSVtoRGB(int H, double S, double V, uint8_t out[3]);
+int render_png(
+	const char *filepath,
+	unsigned int width,
+	unsigned int height,
+	double xoffset,
+	double yoffset,
+	double scale,
+	size_t iterations,
+	size_t thread_count
+);
 
 int main(int argc, char *argv[]){
-	/* Check for min argument count */
-	if(argc < 2){
-		fprintf(stderr, "Invalid usage\n");
-		print_usage();
-		return 1;
+	return render_png(
+		"out.png",
+		1920 * 4 * 2,
+		1080 * 4 * 2,
+		0,
+		0,
+		400 * 4 * 2,
+		100,
+		2
+	);
+
+  return 0;
+}
+
+#if PTHREAD_SUPPORTED == 1
+struct renderfuncparam{
+  png_byte **row_parr; // Array of row pointers
+	unsigned int width, height;
+	png_structp png_ptr;
+  double xoffset, yoffset;
+  double scale;
+  size_t iterations;
+  int cpid; // Current pid
+  int mpid; // Max pid
+};
+
+void *renderfunc(void *rawparam){
+	struct renderfuncparam *param = (struct renderfuncparam *)rawparam;
+	size_t y = 0, x = 0;
+	unsigned int height = param->height;
+	unsigned int width = param->width;
+	double xoffset = param->xoffset;
+	double yoffset = param->yoffset;
+	size_t iterations = param->iterations;
+	png_structp png_ptr = param->png_ptr;
+	int cpid = param->cpid;
+	int mpid = param->mpid;
+	png_byte **row_parr = param->row_parr;
+	double x_adj = 0, y_adj = 0;
+	complex double point = 0, z = 0;
+  size_t steps = 0;
+	double scale = param->scale;
+	png_byte *row;
+	
+	printf("Before alocation\n");
+
+	for(y = 0 + cpid; y < height; y += mpid){
+		row = png_calloc(png_ptr, sizeof(uint8_t) * width * 3); // 3 is RGB
+		row_parr[y] = row;
 	}
 
-  /* Arguments:
-	n | gterm					| gpng          | gpngmt (UNIX ONLY)
-	1 - command/option
-	2 - WIDTHxHEIGHT 	- filename
-	3 - x offset			- WIDTHxHEIGHT
-	4 - y offset			- x offset
-	5 - scale					- y offset
-	6 - iterations		- scale
-	7 - none					- iterations
-	8 - none					- Color mode
-  9 - none          - none          - thread count
-	*/
-switch(argv[1][0]){
-		case 'l': /* License */
-			print_license();
-			break;
-		case 'h':
-			print_usage();
-			break;
-		case 'g': ;/* Generate */
-			int width, height;
-			double x_offset, y_offset, scale;
-			size_t iterations;
+	printf("After alocation\n");
 
-			if(strcmp(argv[1], "gpng") == 0){ /* Generate png image */
-				colormode_t colormode;
-				char filename[FILENAME_MAX]; // FILENAME_MAX defined in std
+	for(y = 0 + cpid; y < height; y += mpid){
+		row = row_parr[y]; // 3 is RGB
+		y_adj = (double)y / scale - (double)height / 2. / scale + yoffset;
+		for(x = 0; x < width; ++x){
+			x_adj = (double)x / scale - (double)width / 2. / scale + xoffset;
 
-				if(argc <= 8){
-					fprintf(stderr, "Invalid usage\n");
-					return 1;
-				}
+			point = x_adj + y_adj * I;
+			z = 0. + 0.i;
+			steps = 0;
 
-				strncpy(filename, argv[2], FILENAME_MAX);
-				sscanf(argv[3], "%dx%d", &width, &height);
-				x_offset = (double)atof(argv[4]);
-				y_offset = (double)atof(argv[5]);
-				scale = (double)atof(argv[6]);
-				sscanf(argv[7], "%llu", (unsigned long long*)&iterations);
-				colormode = (colormode_t)atoi(argv[8]);
+			while(cabs(z) < 2.0 && steps < iterations){
+        z = z * z + point;
 
-        rendercanvas_t canvas = {
-          width: width,
-          height: height,
-          buffer: malloc(sizeof(pixel_t) * width * height)
-        };
-        int r = rendertocanvas(&canvas, colormode, x_offset, y_offset, scale, iterations);
-				if(r < 0){
-          perror("Failed to render");
-          return -1;
-        }
-        int r2 = savepng(&canvas, filename);
-				if(r2 < 0){
-					perror("Failed to save image");
-          return -1;
-				}
-			}
-			if(strcmp(argv[1], "gterm") == 0){
-				if(argc <= 5){
-					fprintf(stderr, "Invalid usage\n");
-					return 1;
-				}
-
-				sscanf(argv[2], "%dx%d", &width, &height);
-				x_offset = (double)atof(argv[3]);
-				y_offset = (double)atof(argv[4]);
-				scale = (double)atof(argv[5]);
-				sscanf(argv[6], "%llu", (unsigned long long*)&iterations);
-
-        rendercanvas_t canvas = {
-          width: width,
-          height: height,
-          buffer: malloc(sizeof(pixel_t) * width * height)
-        };
-        int r = rendertocanvas(&canvas, BLACKANDWHITE, x_offset, y_offset, scale, iterations);
-					if(r < 0){
-          perror("Failed to render");
-          return -1;
-        }
-        for(size_t y = 0; y < height; ++y){
-          for (size_t x = 0; x < width; ++x)
-          {
-            if(pixel_at(&canvas, x, y)->red > 200){
-              printf("#");
-            } else{
-              printf(" ");
-            }
-          }
-          printf("\n");
-        }
-			}
-      #ifdef __unix
-			if(strcmp(argv[1], "gpngmt") == 0){ /* Generate png mutli threaded */
-        colormode_t colormode;
-				char filename[FILENAME_MAX]; // FILENAME_MAX defined in std
-
-				if(argc <= 9){
-					fprintf(stderr, "Invalid usage\n");
-					return 1;
-				}
-
-				strncpy(filename, argv[2], FILENAME_MAX);
-				sscanf(argv[3], "%dx%d", &width, &height);
-				x_offset = (double)atof(argv[4]);
-				y_offset = (double)atof(argv[5]);
-				scale = (double)atof(argv[6]);
-				sscanf(argv[7], "%llu", (unsigned long long*)&iterations);
-				colormode = (colormode_t)atoi(argv[8]);
-        size_t thread_count = atol(argv[9]);
-
-        rendercanvas_t canvas = {
-          width: width,
-          height: height,
-          buffer: malloc(sizeof(pixel_t) * width * height)
-        };
-        int r = rendertocanvas_multithread(&canvas, colormode, x_offset, y_offset, scale, iterations, thread_count);
-				if(r < 0){
-          perror("Failed to render");
-          return -1;
-        }
-        int r2 = savepng(&canvas, filename);
-				if(r2 < 0){
-					perror("Failed to save image");
-          return -1;
-				}
+        ++steps;
       }
-      #endif
-      break;
-		default:
-			print_usage();
-			break;
+
+			if(steps < iterations)
+				HSVtoRGB((steps * 10) % 255, 1, 1, row);
+			row += 3;
+		}
+	}
+
+	printf("After calculation\n");
+
+	return NULL;
+}
+
+#endif
+
+int render_png(
+	const char *filepath,
+	unsigned int width,
+	unsigned int height,
+	double xoffset,
+	double yoffset,
+	double scale,
+	size_t iterations,
+	size_t thread_count // Does not effect anything if it isn't supported
+){
+  FILE *file = NULL;
+  png_structp png_ptr = NULL;
+  png_infop info_ptr = NULL;
+  png_byte **row_parr = NULL;
+	size_t y = 0;
+	int status = -1;
+	#if PTHREAD_SUPPORTED == 1
+	pthread_t *pthreads;
+	#else
+	double x_adj = 0, y_adj = 0;
+	complex double point = 0, z = 0;
+  size_t steps = 0;
+	size_t x = 0;
+	#endif
+
+	// Open output file
+  file = fopen(filepath, "wb");
+  if(file == NULL){
+    goto fopen_failed;
+  }
+
+  png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+  if(png_ptr == NULL){
+    goto png_create_write_struct_failed;
+  }
+
+  info_ptr = png_create_info_struct(png_ptr);
+  if (info_ptr == NULL){
+    goto png_create_info_struct_failed;
+  }
+
+  // Setup error handling
+  if (setjmp(png_jmpbuf(png_ptr))){
+    goto png_failure;
+  }
+
+  // Setup attributes
+  png_set_IHDR(
+    png_ptr,
+    info_ptr,
+    width,
+    height,
+    8, // Color depth in bits, aka 1 byte
+    PNG_COLOR_TYPE_RGB,
+    PNG_INTERLACE_NONE,
+    PNG_COMPRESSION_TYPE_DEFAULT,
+    PNG_FILTER_TYPE_DEFAULT
+	);
+
+	// Allocate array of rows
+	row_parr = png_malloc(png_ptr, height * sizeof(png_byte *));
+#if PTHREAD_SUPPORTED == 0
+	// Go though rows
+	for(y = 0; y < height; ++y){
+		png_byte *row = png_calloc(png_ptr, sizeof(uint8_t) * width * 3); // 3 is RGB
+		row_parr[y] = row;
+		y_adj = (double)y / scale - (double)height / 2. / scale + yoffset;
+		for(x = 0; x < width; ++x){
+			x_adj = (double)x / scale - (double)width / 2. / scale + xoffset;
+
+			point = x_adj + y_adj * I;
+			z = 0. + 0.i;
+			steps = 0;
+
+			while(cabs(z) < 2.0 && steps < iterations){
+        z = z * z + point;
+
+        ++steps;
+      }
+
+			if(steps < iterations)
+				HSVtoRGB((steps * 10) % 255, 1, 1, row);
+			row += 3;
+		}
+	}
+#else
+	// Create default struct
+	struct renderfuncparam standardparam = {
+		row_parr: row_parr,
+		width: width,
+		height: height,
+		png_ptr: png_ptr,
+		xoffset: xoffset,
+		yoffset: yoffset,
+		scale: scale,
+		iterations: iterations,
+		cpid: 0,
+		mpid: 0
+	};
+
+	// Alocate array for pthread handles, and on for parameters.
+	pthreads = malloc(sizeof(pthread_t) * thread_count);
+	struct renderfuncparam *customparam_arr = malloc(sizeof(struct renderfuncparam) * thread_count);
+
+	// Create pthreads
+	for(size_t tc = 0; tc < thread_count; ++tc){
+    struct renderfuncparam *customparam = &customparam_arr[tc];
+    bcopy(&standardparam, customparam, sizeof(struct renderfuncparam));
+
+    customparam->cpid = tc;
+    customparam->mpid = thread_count;
+
+    int cr = pthread_create(&pthreads[tc], NULL, renderfunc, (void *)customparam);
+    if(cr < 0){
+      perror("Failed to create pthread, exiting");
+      goto pthread_failure;
+    }
+  }
+
+  for(size_t tc = 0; tc < thread_count; ++tc){
+    int jr = pthread_join(pthreads[tc], NULL);
+    if(jr < 0){
+      perror("Failed to join pthread, continuing");
+    }
+  }
+
+#endif
+
+	// Write image to file
+	png_init_io(png_ptr, file);
+	png_set_rows(png_ptr, info_ptr, row_parr);
+  png_write_png(png_ptr, info_ptr, PNG_TRANSFORM_IDENTITY, NULL);
+
+	// It succeded so set status to 0
+	status = 0;
+
+	// Cleanup
+	for (y = 0; y < height; ++y)
+  {
+    png_free(png_ptr, row_parr[y]);
+  }
+  png_free(png_ptr, row_parr);
+
+// Clean threads
+#if PTHREAD_SUPPORTED == 1
+pthread_failure:
+	free(pthreads);
+  free(customparam_arr);
+#endif
+
+// Clean other stuff
+png_failure:
+png_create_info_struct_failed:
+  png_destroy_write_struct(&png_ptr, &info_ptr);
+png_create_write_struct_failed:
+  fclose(file);
+fopen_failed:
+  return status;
+}
+
+inline void HSVtoRGB(int H, double S, double V, uint8_t out[3]){
+	double C = S * V;
+	double X = C * (1 - fabs(fmod(H / 60.0, 2) - 1));
+	double m = V - C;
+	double Rs, Gs, Bs;
+
+	if(H >= 0 && H < 60) {
+		Rs = C;
+		Gs = X;
+		Bs = 0;	
+	}
+	else if(H >= 60 && H < 120) {	
+		Rs = X;
+		Gs = C;
+		Bs = 0;	
+	}
+	else if(H >= 120 && H < 180) {
+		Rs = 0;
+		Gs = C;
+		Bs = X;	
+	}
+	else if(H >= 180 && H < 240) {
+		Rs = 0;
+		Gs = X;
+		Bs = C;	
+	}
+	else if(H >= 240 && H < 300) {
+		Rs = X;
+		Gs = 0;
+		Bs = C;	
+	}
+	else {
+		Rs = C;
+		Gs = 0;
+		Bs = X;	
 	}
 	
-	return 0;
+	out[0] = (Rs + m) * 255;
+	out[1] = (Gs + m) * 255;
+	out[2] = (Bs + m) * 255;
 }
