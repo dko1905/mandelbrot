@@ -1,13 +1,21 @@
-cc=cc
-cflags=-Wall -std=c99 -lm -lpng -lz 
+CC = cc
+CFLAGS = -Wall -std=c99 -lm -lpng -lz -lpthread
 
-mandelbrot: main.o pngtools.o generators.o hsv.o
-	$(cc) main.o pngtools.o generators.o hsv.o -o build/mandelbrot $(cflags)
+CFLAGS += $(INCLUDES)
+
+mandelbrot: main.o renderer.o hsv.o png.o canvas.o
+	$(CC) main.o hsv.o renderer.o png.o canvas.o -o build/mandelbrot $(CFLAGS)
 main.o: src/main.c
-	$(cc) -c src/main.c $(cflags)
-pngtools.o: src/pngtools.c
-	$(cc) -c src/pngtools.c $(cflags) 
-generators.o: src/generators.c
-	$(cc) -c src/generators.c $(cflags)
+	$(CC) -c src/main.c $(CFLAGS)
+renderer.o: src/renderer.c
+	$(CC) -c src/renderer.c $(CFLAGS)
 hsv.o: src/hsv.c
-	$(cc) -c src/hsv.c $(cflags)
+	$(CC) -c src/hsv.c $(CFLAGS)
+png.o: src/png.c
+	$(CC) -c src/png.c $(CFLAGS)
+canvas.o: src/canvas.c
+	$(CC) -c src/canvas.c $(CFLAGS)
+
+clean:
+	rm *.o
+	rm build/*

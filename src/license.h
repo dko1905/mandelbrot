@@ -1,5 +1,3 @@
-#pragma once
-
 #include <stdio.h>
 
 void print_license(){
@@ -12,4 +10,7 @@ void print_usage(){
 	printf("options:\n");
 	printf("gpng <filename> <WIDTHxHEIGHT> <x_offset> <y_offset> <scale (400 for HD)> <iterations> <color mode 0-1>\n");
 	printf("gterm <WIDTHxHEIGHT> <x_offset> <y_offset> <scale (400 for HD)> <iterations>\n");
+  #ifdef __unix
+  printf("gpngmt <WIDTHxHEIGHT> <x_offset> <y_offset> <scale (400 for HD)> <iterations> <thread count>\n");
+  #endif
 }

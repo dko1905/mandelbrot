@@ -14,11 +14,15 @@ You also need make and a compiler. To compile the program, you run the following
 The command will compile into the build folder.
 
 ## Usage
+```
 ./mandelbrot <option> <args> <br/>
 options: <br/>
 gpng <filename> <WIDTHxHEIGHT> <x_offset> <y_offset> <scale (400 for HD)> <iterations> <color mode 0-1> <br/>
 gterm <WIDTHxHEIGHT> <x_offset> <y_offset> <scale (400 for HD)> <iterations> <br/>
+gpngmt <WIDTHxHEIGHT> <x_offset> <y_offset> <scale (400 for HD)> <iterations> <thread count>
+```
 
+gpngmt is only avaiable on unix!
 ## Examples
 35 iterations: 0.55s
 10000 iterations: 41.67s
