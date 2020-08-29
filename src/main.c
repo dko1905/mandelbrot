@@ -7,9 +7,9 @@
 #include <strings.h>
 
 #ifdef __unix__
-#define PTHREAD_SUPPORTED 1
-#else
 #define PTHREAD_SUPPORTED 0
+#else
+#define PTHREAD_SUPPORTED 1
 #endif
 
 #if PTHREAD_SUPPORTED == 1
@@ -31,13 +31,13 @@ int render_png(
 int main(int argc, char *argv[]){
 	return render_png(
 		"out.png",
-		1920 * 4 * 2,
-		1080 * 4 * 2,
+		1920,
+		1080,
 		0,
 		0,
-		400 * 4 * 2,
+		400,
 		100,
-		2
+		8
 	);
 
   return 0;
