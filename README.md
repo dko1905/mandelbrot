@@ -14,20 +14,16 @@ You also need make and a compiler. To compile the program, you run the following
 The command will compile into the build folder.
 
 ## Usage
+This is not currently implemented.
 ```
-./mandelbrot <option> <args> <br/>
-options: <br/>
-gpng <filename> <WIDTHxHEIGHT> <x_offset> <y_offset> <scale (400 for HD)> <iterations> <color mode 0-1> <br/>
-gterm <WIDTHxHEIGHT> <x_offset> <y_offset> <scale (400 for HD)> <iterations> <br/>
-gpngmt <filename> <WIDTHxHEIGHT> <x_offset> <y_offset> <scale (400 for HD)> <iterations> <color mode 0-1> <thread count>
+./mandelbrot 
 ```
-
-gpngmt is only avaiable on unix!
 ## Examples
-35 iterations: 0.55s
-10000 iterations: 41.67s
+These settings were used: -O3 on gcc, and 400 scale for HD. <br/>
+8K (15360x8640), 100 iterations, 4 threads: 11,9s <br/>
+HD (1920x1080), 100 iterations, 1 thread: 0.5s <br/>
 
-Here is the 35 iterations example:
+Here is the HD example
 ![image of mandelbrot](doc_image.png)
 
 ## License
