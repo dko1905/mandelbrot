@@ -19,7 +19,11 @@ The command will compile into the build folder.
 options: <br/>
 gpng <filename> <WIDTHxHEIGHT> <x_offset> <y_offset> <scale (400 for HD)> <iterations> <color mode 0-1> <br/>
 gterm <WIDTHxHEIGHT> <x_offset> <y_offset> <scale (400 for HD)> <iterations> <br/>
+<<<<<<< HEAD
 gpngmt <filename> <WIDTHxHEIGHT> <x_offset> <y_offset> <scale (400 for HD)> <iterations> <color mode 0-1> <thread count>
+=======
+gpngmt <filename> <WIDTHxHEIGHT> <x_offset> <y_offset> <scale (400 for HD)> <iterations> <thread count>
+>>>>>>> 175dda13be6f5b538b8e8dfbc5cf5ab137719e26
 ```
 
 gpngmt is only avaiable on unix!
