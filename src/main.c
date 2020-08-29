@@ -7,9 +7,9 @@
 #include <strings.h>
 
 #ifdef __unix__
-#define PTHREAD_SUPPORTED 0
-#else
 #define PTHREAD_SUPPORTED 1
+#else
+#define PTHREAD_SUPPORTED 0
 #endif
 
 #if PTHREAD_SUPPORTED == 1
@@ -37,7 +37,7 @@ int main(int argc, char *argv[]){
 		0,
 		400,
 		100,
-		8
+		2
 	);
 
   return 0;
