@@ -1,10 +1,11 @@
 #include "hsv.h"
+#include "canvas.h"
 
 /*
  * All credit goes to kuathadianto for the gist.
  * https://gist.github.com/kuathadianto/200148f53616cbd226d993b400214a7f
  */
-void HSVtoRGB(int H, double S, double V, char output[3]) {
+void HSVtoRGB(int H, double S, double V, pixel_t *pixel) {
 	double C = S * V;
 	double X = C * (1 - fabs(fmod(H / 60.0, 2) - 1));
 	double m = V - C;
@@ -41,7 +42,7 @@ void HSVtoRGB(int H, double S, double V, char output[3]) {
 		Bs = X;	
 	}
 	
-	output[0] = (Rs + m) * 255;
-	output[1] = (Gs + m) * 255;
-	output[2] = (Bs + m) * 255;
+	pixel->red = (Rs + m) * 255;
+	pixel->green = (Gs + m) * 255;
+	pixel->blue = (Bs + m) * 255;
 }
