@@ -11,6 +11,6 @@ void print_usage(){
 	printf("gpng <filename> <WIDTHxHEIGHT> <x_offset> <y_offset> <scale (400 for HD)> <iterations> <color mode 0-1>\n");
 	printf("gterm <WIDTHxHEIGHT> <x_offset> <y_offset> <scale (400 for HD)> <iterations>\n");
   #ifdef __unix
-  printf("gpngmt <WIDTHxHEIGHT> <x_offset> <y_offset> <scale (400 for HD)> <iterations> <thread count>\n");
+  printf("gpngmt <filename> <WIDTHxHEIGHT> <x_offset> <y_offset> <scale (400 for HD)> <iterations> <color mode 0-1> <thread count>\n");
   #endif
 }
