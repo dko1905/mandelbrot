@@ -1,5 +1,5 @@
 CC = cc
-CFLAGS = -Wall -std=c99 -lm -lpng -lz -lpthread
+CFLAGS = -Wall -std=c99 -lm -lpng -lz -lpthread -O3
 
 CFLAGS += $(INCLUDES)
 
