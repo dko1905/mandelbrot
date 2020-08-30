@@ -8,6 +8,7 @@ This program has libpng and zlib as dependencies. Here is a table:
 |--------------|--------------|------------|
 | Ubuntu 20.04 | libpng-dev   | zlib1g-dev |
 | Void Linux   | libpng-devel | zlib-devel |
+| Fedora       | libpng-devel | zlib-devel |
 
 You also need make and a compiler. To compile the program, you run the following command.
 `$ mkdir -p build && make`
