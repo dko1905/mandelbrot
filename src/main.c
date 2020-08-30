@@ -29,17 +29,23 @@ int render_png(
 );
 
 int main(int argc, char *argv[]){
+	size_t tc = 0;
+	int r = sscanf(argv[1], "%zd", &tc);
+	if(r < 1){
+		fprintf(stderr, "scanf failed\n");
+		return 1;
+	}
 	return render_png(
 		"out.png",
-		1920,
-		1080,
+		1920 * 4,
+		1080 * 4,
 		0,
 		0,
-		400,
-		100,
-		2
+		400 * 4,
+		1000,
+		tc
 	);
-
+	
   return 0;
 }
 
@@ -70,23 +76,28 @@ void *renderfunc(void *rawparam){
 	double x_adj = 0, y_adj = 0;
 	complex double point = 0, z = 0;
   size_t steps = 0;
-	double scale = param->scale;
+	double scale = 1. / param->scale;
 	png_byte *row;
+	double yhso = 0; // Y, height, scale, offset 
+	double xwso = 0; // X, width, scale, offset 
 	
-	printf("Before alocation\n");
+	//printf("Before alocation\n");
 
 	for(y = 0 + cpid; y < height; y += mpid){
 		row = png_calloc(png_ptr, sizeof(uint8_t) * width * 3); // 3 is RGB
 		row_parr[y] = row;
 	}
 
-	printf("After alocation\n");
+	//printf("After alocation\n");
 
+	// Performance tweaking
+	yhso = (double)height / 2. * scale + yoffset;
+	xwso = (double)width / 2. * scale + xoffset;
 	for(y = 0 + cpid; y < height; y += mpid){
 		row = row_parr[y]; // 3 is RGB
-		y_adj = (double)y / scale - (double)height / 2. / scale + yoffset;
+		y_adj = (double)y * scale - yhso;
 		for(x = 0; x < width; ++x){
-			x_adj = (double)x / scale - (double)width / 2. / scale + xoffset;
+			x_adj = (double)x * scale - xwso;
 
 			point = x_adj + y_adj * I;
 			z = 0. + 0.i;
@@ -104,8 +115,8 @@ void *renderfunc(void *rawparam){
 		}
 	}
 
-	printf("After calculation\n");
-
+	//printf("After calculation\n");
+	
 	return NULL;
 }
 
@@ -134,6 +145,9 @@ int render_png(
 	complex double point = 0, z = 0;
   size_t steps = 0;
 	size_t x = 0;
+	double yhso = 0; // Y, height, scale, offset 
+	double xwso = 0; // X, width, scale, offset
+	scale = 1. / scale;
 	#endif
 
 	// Open output file
@@ -173,13 +187,16 @@ int render_png(
 	// Allocate array of rows
 	row_parr = png_malloc(png_ptr, height * sizeof(png_byte *));
 #if PTHREAD_SUPPORTED == 0
+	// Performance tweaking
+	yhso = (double)height / 2. * scale + yoffset;
+	xwso = (double)width / 2. * scale + xoffset;
 	// Go though rows
 	for(y = 0; y < height; ++y){
 		png_byte *row = png_calloc(png_ptr, sizeof(uint8_t) * width * 3); // 3 is RGB
 		row_parr[y] = row;
-		y_adj = (double)y / scale - (double)height / 2. / scale + yoffset;
+		y_adj = (double)y * scale - yhso;
 		for(x = 0; x < width; ++x){
-			x_adj = (double)x / scale - (double)width / 2. / scale + xoffset;
+			x_adj = (double)x * scale - xwso;
 
 			point = x_adj + y_adj * I;
 			z = 0. + 0.i;
@@ -199,16 +216,16 @@ int render_png(
 #else
 	// Create default struct
 	struct renderfuncparam standardparam = {
-		row_parr: row_parr,
-		width: width,
-		height: height,
-		png_ptr: png_ptr,
-		xoffset: xoffset,
-		yoffset: yoffset,
-		scale: scale,
-		iterations: iterations,
-		cpid: 0,
-		mpid: 0
+		.row_parr = row_parr,
+		.width = width,
+		.height = height,
+		.png_ptr = png_ptr,
+		.xoffset = xoffset,
+		.yoffset = yoffset,
+		.scale = scale,
+		.iterations = iterations,
+		.cpid = 0,
+		.mpid = 0
 	};
 
 	// Alocate array for pthread handles, and on for parameters.
