@@ -37,28 +37,28 @@ int main(int argc, char *argv[]){
 	}
 	return render_png(
 		"out.png",
-		1920 * 4,
-		1080 * 4,
+		1920,
+		1080,
 		0,
 		0,
-		400 * 4,
+		400,
 		1000,
 		tc
 	);
 	
-  return 0;
+	return 0;
 }
 
 #if PTHREAD_SUPPORTED == 1
 struct renderfuncparam{
-  png_byte **row_parr; // Array of row pointers
+	png_byte **row_parr; // Array of row pointers
 	unsigned int width, height;
 	png_structp png_ptr;
-  double xoffset, yoffset;
-  double scale;
-  size_t iterations;
-  int cpid; // Current pid
-  int mpid; // Max pid
+	double xoffset, yoffset;
+	double scale;
+	size_t iterations;
+	int cpid; // Current pid
+	int mpid; // Max pid
 };
 
 void *renderfunc(void *rawparam){
@@ -75,7 +75,7 @@ void *renderfunc(void *rawparam){
 	png_byte **row_parr = param->row_parr;
 	double x_adj = 0, y_adj = 0;
 	complex double point = 0, z = 0;
-  size_t steps = 0;
+	size_t steps = 0;
 	double scale = 1. / param->scale;
 	png_byte *row;
 	double yhso = 0; // Y, height, scale, offset 
@@ -104,10 +104,10 @@ void *renderfunc(void *rawparam){
 			steps = 0;
 
 			while(cabs(z) < 2.0 && steps < iterations){
-        z = z * z + point;
+				z = z * z + point;
 
-        ++steps;
-      }
+				++steps;
+			}
 
 			if(steps < iterations)
 				HSVtoRGB((steps * 10) % 255, 1, 1, row);
@@ -132,10 +132,10 @@ int render_png(
 	size_t iterations,
 	size_t thread_count // Does not effect anything if it isn't supported
 ){
-  FILE *file = NULL;
-  png_structp png_ptr = NULL;
-  png_infop info_ptr = NULL;
-  png_byte **row_parr = NULL;
+	FILE *file = NULL;
+	png_structp png_ptr = NULL;
+	png_infop info_ptr = NULL;
+	png_byte **row_parr = NULL;
 	size_t y = 0;
 	int status = -1;
 	#if PTHREAD_SUPPORTED == 1
@@ -143,7 +143,7 @@ int render_png(
 	#else
 	double x_adj = 0, y_adj = 0;
 	complex double point = 0, z = 0;
-  size_t steps = 0;
+	size_t steps = 0;
 	size_t x = 0;
 	double yhso = 0; // Y, height, scale, offset 
 	double xwso = 0; // X, width, scale, offset
@@ -151,37 +151,37 @@ int render_png(
 	#endif
 
 	// Open output file
-  file = fopen(filepath, "wb");
-  if(file == NULL){
-    goto fopen_failed;
-  }
+	file = fopen(filepath, "wb");
+	if(file == NULL){
+		goto fopen_failed;
+	}
 
-  png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-  if(png_ptr == NULL){
-    goto png_create_write_struct_failed;
-  }
+	png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+	if(png_ptr == NULL){
+		goto png_create_write_struct_failed;
+	}
 
-  info_ptr = png_create_info_struct(png_ptr);
-  if (info_ptr == NULL){
-    goto png_create_info_struct_failed;
-  }
+	info_ptr = png_create_info_struct(png_ptr);
+	if (info_ptr == NULL){
+		goto png_create_info_struct_failed;
+	}
 
-  // Setup error handling
-  if (setjmp(png_jmpbuf(png_ptr))){
-    goto png_failure;
-  }
+	// Setup error handling
+	if (setjmp(png_jmpbuf(png_ptr))){
+		goto png_failure;
+	}
 
-  // Setup attributes
-  png_set_IHDR(
-    png_ptr,
-    info_ptr,
-    width,
-    height,
-    8, // Color depth in bits, aka 1 byte
-    PNG_COLOR_TYPE_RGB,
-    PNG_INTERLACE_NONE,
-    PNG_COMPRESSION_TYPE_DEFAULT,
-    PNG_FILTER_TYPE_DEFAULT
+	// Setup attributes
+	png_set_IHDR(
+		png_ptr,
+		info_ptr,
+		width,
+		height,
+		8, // Color depth in bits, aka 1 byte
+		PNG_COLOR_TYPE_RGB,
+		PNG_INTERLACE_NONE,
+		PNG_COMPRESSION_TYPE_DEFAULT,
+		PNG_FILTER_TYPE_DEFAULT
 	);
 
 	// Allocate array of rows
@@ -203,10 +203,10 @@ int render_png(
 			steps = 0;
 
 			while(cabs(z) < 2.0 && steps < iterations){
-        z = z * z + point;
+				z = z * z + point;
 
-        ++steps;
-      }
+				++steps;
+			}
 
 			if(steps < iterations)
 				HSVtoRGB((steps * 10) % 255, 1, 1, row);
@@ -234,58 +234,58 @@ int render_png(
 
 	// Create pthreads
 	for(size_t tc = 0; tc < thread_count; ++tc){
-    struct renderfuncparam *customparam = &customparam_arr[tc];
-    bcopy(&standardparam, customparam, sizeof(struct renderfuncparam));
+		struct renderfuncparam *customparam = &customparam_arr[tc];
+		bcopy(&standardparam, customparam, sizeof(struct renderfuncparam));
 
-    customparam->cpid = tc;
-    customparam->mpid = thread_count;
+		customparam->cpid = tc;
+		customparam->mpid = thread_count;
 
-    int cr = pthread_create(&pthreads[tc], NULL, renderfunc, (void *)customparam);
-    if(cr < 0){
-      perror("Failed to create pthread, exiting");
-      goto pthread_failure;
-    }
-  }
+		int cr = pthread_create(&pthreads[tc], NULL, renderfunc, (void *)customparam);
+		if(cr < 0){
+			perror("Failed to create pthread, exiting");
+			goto pthread_failure;
+		}
+	}
 
-  for(size_t tc = 0; tc < thread_count; ++tc){
-    int jr = pthread_join(pthreads[tc], NULL);
-    if(jr < 0){
-      perror("Failed to join pthread, continuing");
-    }
-  }
+	for(size_t tc = 0; tc < thread_count; ++tc){
+		int jr = pthread_join(pthreads[tc], NULL);
+		if(jr < 0){
+			perror("Failed to join pthread, continuing");
+		}
+	}
 
 #endif
 
 	// Write image to file
 	png_init_io(png_ptr, file);
 	png_set_rows(png_ptr, info_ptr, row_parr);
-  png_write_png(png_ptr, info_ptr, PNG_TRANSFORM_IDENTITY, NULL);
+	png_write_png(png_ptr, info_ptr, PNG_TRANSFORM_IDENTITY, NULL);
 
 	// It succeded so set status to 0
 	status = 0;
 
 	// Cleanup
 	for (y = 0; y < height; ++y)
-  {
-    png_free(png_ptr, row_parr[y]);
-  }
-  png_free(png_ptr, row_parr);
+	{
+		png_free(png_ptr, row_parr[y]);
+	}
+	png_free(png_ptr, row_parr);
 
 // Clean threads
 #if PTHREAD_SUPPORTED == 1
 pthread_failure:
 	free(pthreads);
-  free(customparam_arr);
+	free(customparam_arr);
 #endif
 
 // Clean other stuff
 png_failure:
 png_create_info_struct_failed:
-  png_destroy_write_struct(&png_ptr, &info_ptr);
+	png_destroy_write_struct(&png_ptr, &info_ptr);
 png_create_write_struct_failed:
-  fclose(file);
+	fclose(file);
 fopen_failed:
-  return status;
+	return status;
 }
 
 inline void HSVtoRGB(int H, double S, double V, uint8_t out[3]){
