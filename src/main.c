@@ -139,7 +139,12 @@ int render_png(
 	size_t y = 0;
 	int status = -1;
 	#if PTHREAD_SUPPORTED == 1
-	pthread_t *pthreads;
+	pthread_t *pthreads = NULL;
+	struct renderfuncparam standardparam = {};
+	struct renderfuncparam *customparam_arr = NULL;
+	struct renderfuncparam *customparam = NULL;
+	int cr = 0; // Create thread result
+	int jr = 0; // Join thread result
 	#else
 	double x_adj = 0, y_adj = 0;
 	complex double point = 0, z = 0;
@@ -215,7 +220,7 @@ int render_png(
 	}
 #else
 	// Create default struct
-	struct renderfuncparam standardparam = {
+	standardparam = (struct renderfuncparam){
 		.row_parr = row_parr,
 		.width = width,
 		.height = height,
@@ -230,17 +235,17 @@ int render_png(
 
 	// Alocate array for pthread handles, and on for parameters.
 	pthreads = malloc(sizeof(pthread_t) * thread_count);
-	struct renderfuncparam *customparam_arr = malloc(sizeof(struct renderfuncparam) * thread_count);
+	customparam_arr = (struct renderfuncparam*)malloc(sizeof(struct renderfuncparam) * thread_count);
 
 	// Create pthreads
 	for(size_t tc = 0; tc < thread_count; ++tc){
-		struct renderfuncparam *customparam = &customparam_arr[tc];
+		customparam = &customparam_arr[tc];
 		bcopy(&standardparam, customparam, sizeof(struct renderfuncparam));
 
 		customparam->cpid = tc;
 		customparam->mpid = thread_count;
 
-		int cr = pthread_create(&pthreads[tc], NULL, renderfunc, (void *)customparam);
+		cr = pthread_create(&pthreads[tc], NULL, renderfunc, (void *)customparam);
 		if(cr < 0){
 			perror("Failed to create pthread, exiting");
 			goto pthread_failure;
