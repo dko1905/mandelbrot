@@ -91,8 +91,8 @@ void *renderfunc(void *rawparam){
 	//printf("After alocation\n");
 
 	// Performance tweaking
-	yhso = (double)height / 2. * scale + yoffset;
-	xwso = (double)width / 2. * scale + xoffset;
+	yhso = (double)height * 0.5 * scale + yoffset;
+	xwso = (double)width * 0.5 * scale + xoffset;
 	for(y = 0 + cpid; y < height; y += mpid){
 		row = row_parr[y]; // 3 is RGB
 		y_adj = (double)y * scale - yhso;
@@ -188,8 +188,8 @@ int render_png(
 	row_parr = png_malloc(png_ptr, height * sizeof(png_byte *));
 #if PTHREAD_SUPPORTED == 0
 	// Performance tweaking
-	yhso = (double)height / 2. * scale + yoffset;
-	xwso = (double)width / 2. * scale + xoffset;
+	yhso = (double)height * 0.5 * scale + yoffset;
+	xwso = (double)width * 0.5 * scale + xoffset;
 	// Go though rows
 	for(y = 0; y < height; ++y){
 		png_byte *row = png_calloc(png_ptr, sizeof(uint8_t) * width * 3); // 3 is RGB
