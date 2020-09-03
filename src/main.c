@@ -4,7 +4,7 @@
 #include <math.h>
 #include <png.h>
 #include <stdint.h>
-#include <strings.h>
+#include <string.h>
 
 #ifdef __unix__
 #define PTHREAD_SUPPORTED 1
@@ -37,11 +37,11 @@ int main(int argc, char *argv[]){
 	}
 	return render_png(
 		"out.png",
-		1920,
-		1080,
+		1920 * 4,
+		1080 * 4,
 		0,
 		0,
-		400,
+		400 * 4,
 		1000,
 		tc
 	);
@@ -240,7 +240,7 @@ int render_png(
 	// Create pthreads
 	for(size_t tc = 0; tc < thread_count; ++tc){
 		customparam = &customparam_arr[tc];
-		bcopy(&standardparam, customparam, sizeof(struct renderfuncparam));
+		memcpy(customparam, &standardparam, sizeof(struct renderfuncparam));
 
 		customparam->cpid = tc;
 		customparam->mpid = thread_count;
