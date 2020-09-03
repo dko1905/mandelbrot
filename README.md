@@ -21,11 +21,9 @@ This is not currently implemented.
 ./mandelbrot 
 ```
 ## Examples
-These settings were used: -O3 on gcc, and 400 scale for HD. <br/>
-8K (15360x8640), 100 iterations, 4 threads: 11,9s <br/>
-HD (1920x1080), 100 iterations, 1 thread: 0.5s <br/>
+It's quite hard to test speed, so I'll just say it's fast.
 
-Here is the HD example
+Here is a HD render
 ![image of mandelbrot](doc_image.png)
 
 ## License
