@@ -253,7 +253,7 @@ int render_png(
 	}
 
 	for(size_t tc = 0; tc < thread_count; ++tc){
-		int jr = pthread_join(pthreads[tc], NULL);
+		jr = pthread_join(pthreads[tc], NULL);
 		if(jr < 0){
 			perror("Failed to join pthread, continuing");
 		}
