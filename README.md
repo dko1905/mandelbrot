@@ -1,4 +1,5 @@
 # Mandelbrot Generator
+![C CI](https://github.com/Dko1905/mandelbrot/workflows/C%20CI/badge.svg)<br/>
 This is a mandelbrot generator written in c using libpng with zlib to create png images.
 
 ## Compiling
