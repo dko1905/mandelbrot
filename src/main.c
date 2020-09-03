@@ -138,14 +138,14 @@ int render_png(
 	png_byte **row_parr = NULL;
 	size_t y = 0;
 	int status = -1;
-	#if PTHREAD_SUPPORTED == 1
+#if PTHREAD_SUPPORTED == 1
 	pthread_t *pthreads = NULL;
 	struct renderfuncparam standardparam = {};
 	struct renderfuncparam *customparam_arr = NULL;
 	struct renderfuncparam *customparam = NULL;
 	int cr = 0; // Create thread result
 	int jr = 0; // Join thread result
-	#else
+#else
 	double x_adj = 0, y_adj = 0;
 	complex double point = 0, z = 0;
 	size_t steps = 0;
@@ -153,7 +153,7 @@ int render_png(
 	double yhso = 0; // Y, height, scale, offset 
 	double xwso = 0; // X, width, scale, offset
 	scale = 1. / scale;
-	#endif
+#endif
 
 	// Open output file
 	file = fopen(filepath, "wb");
@@ -276,14 +276,14 @@ int render_png(
 	}
 	png_free(png_ptr, row_parr);
 
-// Clean threads
+	// Clean threads
 #if PTHREAD_SUPPORTED == 1
 pthread_failure:
 	free(pthreads);
 	free(customparam_arr);
 #endif
 
-// Clean other stuff
+	// Clean other stuff
 png_failure:
 png_create_info_struct_failed:
 	png_destroy_write_struct(&png_ptr, &info_ptr);
