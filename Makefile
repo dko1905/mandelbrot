@@ -1,6 +1,6 @@
 .POSIX:
 
-MYCFLAGS = -std=c99 -O3 -ffast-math -Wall -Wextra -Wno-builtin-declaration-mismatch $(CFLAGS)
+MYCFLAGS = -std=c99 -O3 -ffast-math -Wall -Wextra $(CFLAGS)
 MYLDFLAGS = -lm -lpng -lz -pthread $(LDFLAGS)
 OBJECTS = main.o
 
@@ -12,5 +12,5 @@ mandelbrot: $(OBJECTS)
 
 .PHONY: clean
 clean:
-	rm -f xorcryptor $(OBJECTS)
+	rm -f mandelbrot $(OBJECTS)
 	rm -f *.o
