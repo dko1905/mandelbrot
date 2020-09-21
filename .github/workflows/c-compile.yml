@@ -13,6 +13,6 @@ jobs:
     - uses: actions/checkout@v2
     - name: Install dependencies
       run: sudo apt install libpng-dev zlib1g-dev gcc make -y
-    - name: Create build dir & compile 
-      run: mkdir -p build && make
+    - name: Run make to compile
+      run: make
       

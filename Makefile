@@ -1,14 +1,16 @@
-CC = cc
-CFLAGS = -Wall -std=c99 -O3 -ffast-math
-LDFLAGS = -lm -lpng -lz -lpthread
+.POSIX:
 
-CFLAGS += $(INCLUDES)
+MYCFLAGS = -std=c99 -O3 -ffast-math -Wall -Wextra -Wno-builtin-declaration-mismatch $(CFLAGS)
+MYLDFLAGS = -lm -lpng -lz -pthread $(LDFLAGS)
+OBJECTS = main.o
 
-mandelbrot: main.o
-	$(CC) main.o -o build/mandelbrot $(LDFLAGS)
-main.o: src/main.c
-	$(CC) -c src/main.c $(CFLAGS)
+all: mandelbrot
+mandelbrot: $(OBJECTS)
+	$(CC) $(OBJECTS) -o mandelbrot $(MYLDFLAGS)
+.c.o:
+	$(CC) $(MYCFLAGS) -c $<
 
+.PHONY: clean
 clean:
-	rm *.o
-	rm build/*
+	rm -f xorcryptor $(OBJECTS)
+	rm -f *.o

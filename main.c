@@ -29,6 +29,7 @@ int render_png(
 );
 
 int main(int argc, char *argv[]){
+	(void) argc; // Argc is not used
 	size_t tc = 0;
 	int r = sscanf(argv[1], "%zd", &tc);
 	if(r < 1){

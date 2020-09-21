@@ -1,4 +1,2 @@
-build/*
+mandelbrot
 *.o
-compile_commands.json
-out.png
