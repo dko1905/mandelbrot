@@ -1,6 +1,6 @@
 .POSIX:
 
-MYCFLAGS = -std=c99 -O3 -ffast-math -Wall -Wextra -pedantic $(CFLAGS)
+MYCFLAGS = -std=c99 -ffast-math -Wall -Wextra -pedantic $(CFLAGS)
 MYLDFLAGS = -lm -lpng -lz -pthread $(LDFLAGS)
 OBJECTS = main.o
 
