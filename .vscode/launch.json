@@ -5,10 +5,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "(gdb) Launch",
+      "name": "Launch program with gdb",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/build/mandelbrot",
+      "program": "${workspaceFolder}/mandelbrot",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
