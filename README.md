@@ -16,7 +16,7 @@ You also need make and a compiler. To compile the program, you run the following
 The command will compile into the build folder.
 
 ## Usage
-This is not currently implemented.
+To get usage
 ```
 ./mandelbrot 
 ```
