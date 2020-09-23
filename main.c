@@ -1,3 +1,5 @@
+#define _POSIX_C_SOURCE 200809L //TODO find right POSIX version
+
 #include <complex.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -5,6 +7,7 @@
 #include <png.h>
 #include <stdint.h>
 #include <string.h>
+#include <assert.h>
 
 #ifdef __unix__
 #define PTHREAD_SUPPORTED 1
@@ -12,13 +15,24 @@
 #define PTHREAD_SUPPORTED 0
 #endif
 
+// Platform specific headers
 #if PTHREAD_SUPPORTED == 1
 #include <pthread.h>
 #endif
 
-void HSVtoRGB(int H, double S, double V, uint8_t out[3]);
+// Error messages
+static const char *err_invalid_usage = "Invalid usage: %s\n";
+#if PTHREAD_SUPPORTED == 0
+static const char *err_usage = "Usage: mandelbrot <output filename> <width> \
+<height> <x offset> <y offset> <scale> <iterations>\n";
+#else
+static const char *err_usage = "Usage: mandelbrot <output filename> <width> \
+<height> <x offset> <y offset> <scale> <iterations> <thread count>\n";
+#endif
+
+void hsv_to_rgb(uint_fast16_t H, double S, double V, uint8_t out[3]);
 int render_png(
-	const char *filepath,
+	const char *filename,
 	unsigned int width,
 	unsigned int height,
 	double xoffset,
@@ -29,25 +43,47 @@ int render_png(
 );
 
 int main(int argc, char *argv[]){
-	(void) argc; // Argc is not used
-	size_t tc = 0;
-	int r = sscanf(argv[1], "%zd", &tc);
-	if(r < 1){
-		fprintf(stderr, "scanf failed\n");
+	const char *filename = NULL;
+	unsigned int width = 0, height = 0;
+	double xoffset = 0., yoffset = 0., scale = 0.;
+	size_t iterations = 0, thread_count = 0;
+	if(argc < 9){
+		fprintf(stderr, err_invalid_usage, "Not enough arguments");
+		puts(err_usage);
 		return 1;
 	}
+
+	// Set varibles
+	filename = argv[1];
+	width = atoll(argv[2]);
+	height = atoll(argv[3]);
+	xoffset = atof(argv[4]);
+	yoffset = atof(argv[5]);
+	scale = atof(argv[6]);
+	if(sscanf(argv[7], "%zu", &iterations) < 1){
+		fprintf(stderr, err_invalid_usage, "Iterations is invalid");
+		return 1;
+	}
+	if(sscanf(argv[8], "%zu", &thread_count) < 1){
+		fprintf(stderr, err_invalid_usage, "Thread count is invalid");
+		return 1;
+	}
+	// Assert variables
+	assert(filename != NULL);
+	assert(strcmp(filename, "") != 0);
+	assert(width > 0 && height > 0);
+	assert(thread_count > 0 );
+	// Run
 	return render_png(
-		"out.png",
-		1920 * 4,
-		1080 * 4,
-		0,
-		0,
-		400 * 4,
-		1000,
-		tc
+		filename,
+		width,
+		height,
+		xoffset,
+		yoffset,
+		scale,
+		iterations,
+		thread_count
 	);
-	
-	return 0;
 }
 
 #if PTHREAD_SUPPORTED == 1
@@ -101,7 +137,7 @@ void *renderfunc(void *rawparam){
 			x_adj = (double)x * scale - xwso;
 
 			point = x_adj + y_adj * I;
-			z = 0. + 0.i;
+			z = 0.;
 			steps = 0;
 
 			while(cabs(z) < 2.0 && steps < iterations){
@@ -111,7 +147,7 @@ void *renderfunc(void *rawparam){
 			}
 
 			if(steps < iterations)
-				HSVtoRGB((steps * 10) % 255, 1, 1, row);
+				hsv_to_rgb((steps * 10) % 255, 1, 1, row);
 			row += 3;
 		}
 	}
@@ -124,7 +160,7 @@ void *renderfunc(void *rawparam){
 #endif
 
 int render_png(
-	const char *filepath,
+	const char *filename,
 	unsigned int width,
 	unsigned int height,
 	double xoffset,
@@ -141,7 +177,7 @@ int render_png(
 	int status = -1;
 #if PTHREAD_SUPPORTED == 1
 	pthread_t *pthreads = NULL;
-	struct renderfuncparam standardparam = {};
+	struct renderfuncparam standardparam;
 	struct renderfuncparam *customparam_arr = NULL;
 	struct renderfuncparam *customparam = NULL;
 	int cr = 0; // Create thread result
@@ -157,7 +193,7 @@ int render_png(
 #endif
 
 	// Open output file
-	file = fopen(filepath, "wb");
+	file = fopen(filename, "wb");
 	if(file == NULL){
 		goto fopen_failed;
 	}
@@ -215,7 +251,7 @@ int render_png(
 			}
 
 			if(steps < iterations)
-				HSVtoRGB((steps * 10) % 255, 1, 1, row);
+				hsv_to_rgb((steps * 10) % 255, 1, 1, row);
 			row += 3;
 		}
 	}
@@ -294,7 +330,7 @@ fopen_failed:
 	return status;
 }
 
-inline void HSVtoRGB(int H, double S, double V, uint8_t out[3]){
+inline void hsv_to_rgb(uint_fast16_t H, double S, double V, uint8_t out[3]){
 	double C = S * V;
 	double X = C * (1 - fabs(fmod(H / 60.0, 2) - 1));
 	double m = V - C;
