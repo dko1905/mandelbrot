@@ -27,4 +27,4 @@ Here is a HD render
 ![image of mandelbrot](doc_image.png)
 
 ## License
-[BSD 2 Clause](LICENSE)
+[MIT](LICENSE)
