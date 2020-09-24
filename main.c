@@ -1,6 +1,22 @@
-#define _POSIX_C_SOURCE 200809L //TODO find right POSIX version
+#define _POSIX_C_SOURCE 200112L
+
+// __STDC_NO_COMPLEX__ is c11, and should never be defined
+#ifdef __STDC_NO_COMPLEX__
+#error "Complex numbers not supported, because __STDC_NO_COMPLEX__ is defined"
+#endif
+
+#ifdef __unix__
+#define PTHREAD_SUPPORTED 1
+#else
+#define PTHREAD_SUPPORTED 0
+#endif
 
 #include <complex.h>
+// Check for complex number support
+#ifndef _Complex_I
+#error "Complex numbers not supported, because _Complex_I is not defined"
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -8,12 +24,6 @@
 #include <stdint.h>
 #include <string.h>
 #include <assert.h>
-
-#ifdef __unix__
-#define PTHREAD_SUPPORTED 1
-#else
-#define PTHREAD_SUPPORTED 0
-#endif
 
 // Platform specific headers
 #if PTHREAD_SUPPORTED == 1
@@ -336,7 +346,7 @@ inline void hsv_to_rgb(uint_fast16_t H, double S, double V, uint8_t out[3]){
 	double m = V - C;
 	double Rs, Gs, Bs;
 
-	if(H >= 0 && H < 60) {
+	if(H < 60) {
 		Rs = C;
 		Gs = X;
 		Bs = 0;	
