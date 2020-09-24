@@ -23,7 +23,6 @@
 #include <png.h>
 #include <stdint.h>
 #include <string.h>
-#include <assert.h>
 
 // Platform specific headers
 #if PTHREAD_SUPPORTED == 1
@@ -70,19 +69,32 @@ int main(int argc, char *argv[]){
 	xoffset = atof(argv[4]);
 	yoffset = atof(argv[5]);
 	scale = atof(argv[6]);
+	// Check for invalid input
+	if(filename == NULL || filename[0] == '\n' || filename[0] == '\0' || filename[0] == '\r'){
+		fprintf(stderr, err_invalid_usage, "Filename is invalid");
+		return 1;
+	}
+	if(width == 0){ // `==` because it's unsinged
+		fprintf(stderr, err_invalid_usage, "Width is invalid");
+		return 1;
+	}
+	if(height == 0){ // `==` because it's unsinged
+		fprintf(stderr, err_invalid_usage, "Height is invalid");
+		return 1;
+	}
 	if(sscanf(argv[7], "%zu", &iterations) < 1){
 		fprintf(stderr, err_invalid_usage, "Iterations is invalid");
 		return 1;
+	} else if(iterations == 0){ // `==` because it's unsinged
+		fprintf(stderr, err_invalid_usage, "Iterations must be over 0");
 	}
 	if(sscanf(argv[8], "%zu", &thread_count) < 1){
 		fprintf(stderr, err_invalid_usage, "Thread count is invalid");
 		return 1;
+	} else if(thread_count == 0){ // `==` because it's unsinged
+		fprintf(stderr, err_invalid_usage, "Thread count must be over 0");
+		return 1;
 	}
-	// Assert variables
-	assert(filename != NULL);
-	assert(strcmp(filename, "") != 0);
-	assert(width > 0 && height > 0);
-	assert(thread_count > 0 );
 	// Run
 	return render_png(
 		filename,
@@ -195,8 +207,7 @@ int render_png(
 #else
 	double x_adj = 0, y_adj = 0;
 	complex double point = 0, z = 0;
-	size_t steps = 0;
-	size_t x = 0;
+	size_t steps = 0, x = 0;
 	double yhso = 0; // Y, height, scale, offset 
 	double xwso = 0; // X, width, scale, offset
 	scale = 1. / scale;
