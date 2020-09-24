@@ -95,7 +95,6 @@ int main(int argc, char *argv[]){
 		fprintf(stderr, err_invalid_usage, "Thread count must be over 0");
 		return 1;
 	}
-	// Run
 	return render_png(
 		filename,
 		width,
@@ -139,15 +138,11 @@ void *renderfunc(void *rawparam){
 	png_byte *row;
 	double yhso = 0; // Y, height, scale, offset 
 	double xwso = 0; // X, width, scale, offset 
-	
-	//printf("Before alocation\n");
 
 	for(y = 0 + cpid; y < height; y += mpid){
 		row = png_calloc(png_ptr, sizeof(uint8_t) * width * 3); // 3 is RGB
 		row_parr[y] = row;
 	}
-
-	//printf("After alocation\n");
 
 	// Performance tweaking
 	yhso = (double)height * 0.5 * scale + yoffset;
@@ -173,8 +168,6 @@ void *renderfunc(void *rawparam){
 			row += 3;
 		}
 	}
-
-	//printf("After calculation\n");
 	
 	return NULL;
 }
@@ -198,6 +191,7 @@ int render_png(
 	size_t y = 0;
 	int status = -1;
 #if PTHREAD_SUPPORTED == 1
+	size_t tc = 0;
 	pthread_t *pthreads = NULL;
 	struct renderfuncparam standardparam;
 	struct renderfuncparam *customparam_arr = NULL;
@@ -296,7 +290,7 @@ int render_png(
 	customparam_arr = (struct renderfuncparam*)malloc(sizeof(struct renderfuncparam) * thread_count);
 
 	// Create pthreads
-	for(size_t tc = 0; tc < thread_count; ++tc){
+	for(tc = 0; tc < thread_count; ++tc){
 		customparam = &customparam_arr[tc];
 		memcpy(customparam, &standardparam, sizeof(struct renderfuncparam));
 
@@ -310,7 +304,7 @@ int render_png(
 		}
 	}
 
-	for(size_t tc = 0; tc < thread_count; ++tc){
+	for(tc = 0; tc < thread_count; ++tc){
 		jr = pthread_join(pthreads[tc], NULL);
 		if(jr < 0){
 			perror("Failed to join pthread, continuing");
