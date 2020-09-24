@@ -3,7 +3,7 @@
 This is a mandelbrot generator written in c using libpng with zlib to create png images.
 
 ## Compiling
-This program has libpng and zlib as dependencies. Here is a table:
+This program has libpng and zlib as dependencies. Here is a table of dependency names on different systems:
 
 | Distro       | libpng       | zlib       |
 |--------------|--------------|------------|
@@ -11,15 +11,16 @@ This program has libpng and zlib as dependencies. Here is a table:
 | Void Linux   | libpng-devel | zlib-devel |
 | Fedora       | libpng-devel | zlib-devel |
 
-You also need make and a compiler. To compile the program, you run the following command.
-`$ mkdir -p build && make`
-The command will compile into the build folder.
+After installing all dependencies, you just run `make`.
 
 ## Usage
-To get usage
+To get usage:
 ```
-./mandelbrot 
+$ ./mandelbrot
+Invalid usage: Not enough arguments
+Usage: mandelbrot <output filename> <width> <height> <x offset> <y offset> <scale> <iterations> (<thread count>)
 ```
+`<thread count>` only works if it is compiled on unix, or if the `__unix__` flag is set.
 ## Examples
 It's quite hard to test speed, so I'll just say it's fast.
 
