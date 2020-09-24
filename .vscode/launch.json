@@ -9,7 +9,16 @@
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/mandelbrot",
-      "args": [],
+      "args": [
+				"out.png",
+				"1920",
+				"1080",
+				"0",
+				"0",
+				"200",
+				"2000",
+				"2"
+			],
       "stopAtEntry": false,
       "cwd": "${workspaceFolder}",
       "environment": [],
