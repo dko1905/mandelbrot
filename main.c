@@ -7,9 +7,9 @@
 
 // Setup flags
 #ifdef __unix__
-#define PTHREAD_SUPPORTED 0
-#else
 #define PTHREAD_SUPPORTED 1
+#else
+#define PTHREAD_SUPPORTED 0
 #endif
 
 #ifndef VERBOSE
