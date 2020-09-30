@@ -5,10 +5,15 @@
 #error "Complex numbers not supported, because __STDC_NO_COMPLEX__ is defined"
 #endif
 
+// Setup flags
 #ifdef __unix__
-#define PTHREAD_SUPPORTED 1
-#else
 #define PTHREAD_SUPPORTED 0
+#else
+#define PTHREAD_SUPPORTED 1
+#endif
+
+#ifndef VERBOSE
+#define VERBOSE 1
 #endif
 
 #include <complex.h>
@@ -244,6 +249,7 @@ int render_png(
 	// Allocate array of rows
 	row_parr = png_malloc(png_ptr, height * sizeof(png_byte *));
 #if PTHREAD_SUPPORTED == 0
+	(void)thread_count;
 	// Performance tweaking
 	yhso = (double)height * 0.5 * scale + yoffset;
 	xwso = (double)width * 0.5 * scale + xoffset;
@@ -256,7 +262,7 @@ int render_png(
 			x_adj = (double)x * scale - xwso;
 
 			point = x_adj + y_adj * I;
-			z = 0. + 0.i;
+			z = 0. + 0 * I;
 			steps = 0;
 
 			while(cabs(z) < 2.0 && steps < iterations){
@@ -269,7 +275,14 @@ int render_png(
 				hsv_to_rgb((steps * 10) % 255, 1, 1, row);
 			row += 3;
 		}
+		#if VERBOSE == 1
+		printf("\rCurrent progress %.2f%%", (double)y/height * 100);
+		fflush(stdout);
+		#endif
 	}
+	#if VERBOSE == 1
+	printf("\rCurrent progress %.2f%%\n", 100.);
+	#endif
 #else
 	// Create default struct
 	standardparam = (struct renderfuncparam){
