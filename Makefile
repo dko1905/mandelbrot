@@ -1,20 +1,25 @@
 .POSIX:
 
-PKG_CONFIG = pkg-config
-
-MYCFLAGS = -std=c99 -ffast-math -Wall -Wextra -pedantic $(CFLAGS)
-MYLDFLAGS = $(LDFLAGS) -lm -pthread \
-	`$(PKG_CONFIG) --libs libpng`
+include config.mk
 
 OBJECTS = main.o
 
-all: mandelbrot
-mandelbrot: $(OBJECTS)
-	$(CC) $(OBJECTS) -o mandelbrot $(MYLDFLAGS)
+all: options mandelbrot
+
+options:
+	@echo Mandelbrot build options:
+	@echo "CFLAGS  = $(MYCFLAGS)"
+	@echo "LDFLAGS = $(MYLDFLAGS)"
+	@echo "CC      = $(CC)"
+
 .c.o:
 	$(CC) $(MYCFLAGS) -c $<
 
-.PHONY: clean
+mandelbrot: $(OBJECTS)
+	$(CC) $(OBJECTS) -o mandelbrot $(MYLDFLAGS)
+
 clean:
 	rm -f mandelbrot $(OBJECTS)
 	rm -f *.o
+
+.PHONY: all options clean
