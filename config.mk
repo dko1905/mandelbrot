@@ -1,5 +1,5 @@
 # Mandelbrot version
-VERSION = 0.1.1
+VERSION = 0.1.2
 
 # Customize to fit your system
 PKG_CONFIG = pkg-config

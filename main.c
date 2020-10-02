@@ -6,14 +6,20 @@
 #endif
 
 // Setup flags
+#ifndef PTHREAD_SUPPORTED
 #ifdef __unix__
-#define PTHREAD_SUPPORTED 1
-#else
 #define PTHREAD_SUPPORTED 0
+#else
+#define PTHREAD_SUPPORTED 1
+#endif
 #endif
 
 #ifndef VERBOSE
 #define VERBOSE 1
+#endif
+
+#ifndef VERSION
+#define VERSION "Something went wrong with version!"
 #endif
 
 #include <complex.h>
@@ -37,10 +43,10 @@
 // Error messages
 static const char *err_invalid_usage = "Invalid usage: %s\n";
 #if PTHREAD_SUPPORTED == 0
-static const char *err_usage = "Usage: mandelbrot <output filename> <width> \
-<height> <x offset> <y offset> <scale> <iterations>\n";
+static const char *err_usage = "Version: "VERSION"\nUsage: mandelbrot <output filename> <width> \
+<height> <x offset> <y offset> <scale> <iterations> <thread count (not used)>\n";
 #else
-static const char *err_usage = "Usage: mandelbrot <output filename> <width> \
+static const char *err_usage = "Version: "VERSION"\nUsage: mandelbrot <output filename> <width> \
 <height> <x offset> <y offset> <scale> <iterations> <thread count>\n";
 #endif
 
@@ -63,7 +69,7 @@ int main(int argc, char *argv[]){
 	size_t iterations = 0, thread_count = 0;
 	if(argc < 9){
 		fprintf(stderr, err_invalid_usage, "Not enough arguments");
-		puts(err_usage);
+		printf("%s", err_usage);
 		return 1;
 	}
 
