@@ -1,7 +1,11 @@
 .POSIX:
 
+PKG_CONFIG = pkg-config
+
 MYCFLAGS = -std=c99 -ffast-math -Wall -Wextra -pedantic $(CFLAGS)
-MYLDFLAGS = -lm -lpng -lz -pthread $(LDFLAGS)
+MYLDFLAGS = $(LDFLAGS) -lm -pthread \
+	`$(PKG_CONFIG) --libs libpng`
+
 OBJECTS = main.o
 
 all: mandelbrot
