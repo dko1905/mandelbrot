@@ -14,7 +14,7 @@ LIBS = -lm -pthread \
 
 # Flags
 MYCPPFLAGS = `if ! [ -z "$(PTHREAD_SUPPORTED)" ]; then echo -n -DPTHREAD_SUPPORTED=$(PTHREAD_SUPPORTED); fi` \
-             -DVERBOSE=\"$(VERBOSE)\" \
+             -DVERBOSE=$(VERBOSE) \
              -DVERSION=\"$(VERSION)\" # My Preprocessor
 MYCFLAGS = -std=c99 -Wall -Wextra -pedantic \
            $(INCS) $(MYCPPFLAGS) $(CPPFLAGS) $(CFLAGS) # My C-flags
