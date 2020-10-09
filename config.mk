@@ -1,5 +1,5 @@
 # Mandelbrot version
-VERSION = 0.1.2
+VERSION = 0.1.3
 VERBOSE = 1
 
 # Customize to fit your system
