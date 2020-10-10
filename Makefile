@@ -22,4 +22,3 @@ clean:
 	rm -f mandelbrot $(OBJECTS)
 
 .PHONY: all options clean
-
