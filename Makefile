@@ -20,7 +20,6 @@ mandelbrot: $(OBJECTS)
 
 clean:
 	rm -f mandelbrot $(OBJECTS)
-	rm -f *.o
 
 .PHONY: all options clean
 
