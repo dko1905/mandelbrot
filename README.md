@@ -23,6 +23,7 @@ By default it installs the binary to `/usr/local/bin`, you can change this under
 
 ## Usage
 To get the usage run the program without any parameters.
+To get the version and license run the program with `-v`.
 
 ## Configuration
 ### `config.mk` options (makefile variables):
