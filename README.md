@@ -4,6 +4,7 @@ This is a mandelbrot generator written in c using libpng with zlib to create png
 
 ## Compiling
 This program has libpng and zlib as dependencies. Here is a table of dependency names on different systems:
+Remember that pkg-config, make and a c99 compatible compiler (gcc, tcc...) are required to compile.
 
 | Distro       | libpng       | zlib       |
 |--------------|--------------|------------|
@@ -13,33 +14,36 @@ This program has libpng and zlib as dependencies. Here is a table of dependency 
 
 After installing all dependencies, you just run `make`.
 
+## Installing and uninstalling
+Remember to have the right permissions, by using `sudo` or running as root.
+Install: `make install`
+Uninstall: `make uninstall`
+
+By default it installs the binary to `/usr/local/bin`, you can change this under [Configuration](#Configuration).
+
 ## Usage
-To get usage:
-```
-$ ./mandelbrot
-Invalid usage: Not enough arguments
-Version: 0.1.1
-Usage: mandelbrot <output filename> <width> <height> <x offset> <y offset> <scale> <iterations> <thread count (not used)>
-```
+To get the usage run the program without any parameters.
 
 ## Configuration
 ### `config.mk` options (makefile variables):
-`VERBOSE`: Set this to 1 if you want verbose info when running the program.  
-`VERSION`: Set this to the version you want displayed in the program, any string is acceptable.  
-`PKG_CONFIG`: Set this to the path or name of your preferred pkg-config.
+| Name       | Default value | Description                                                                          |
+|------------|---------------|--------------------------------------------------------------------------------------|
+| VERBOSE    | 1             | This changes the verboseness of the program.                                         |
+| VERSION    | <version>     | This changes the version printed when running the program. Any string is acceptable. |
+| PKG\_CONFIG| pkg-config    | This changes the binary that is used for pkg-config.                                 |
+| PREFIX     | /usr/local    | This changes where the binary is installed to. ( /usr/local/bin )                    |
 ### Compiler options (enviroment variables):
-`PTHREAD_SUPPORTED`: Set this to 1 if you want to force pthread usage.  
-`CC`: Set this to change the compiler  
-`CPPFLAGS`: C preprocessor flags  
-`CFLAGS`: C compiler flags  
-`LDFLAGS`: Linker flags  
+| Name              | Default value   | Description                                              |
+|-------------------|-----------------|----------------------------------------------------------|
+| PTHREAD_SUPPORTED | Depends on OS   | You can set this to force using one or multiple threads. |
+| CC                | Depends on make | You can set this to force a specific compiler.           |
+| CPPFLAGS          | Empty           | C preprocessor flags                                     |
+| CFLAGS            | Depends on make | C compiler flags                                         |
+| LDFLAGS           | Empty           | Linker flags                                             |
 
 ## Examples
-It's quite hard to test speed, so I'll just say it's fast.
-
-Here is a HD render
+1920x1080, 400 zoom, 4000 iterations: <br/>
 ![image of mandelbrot](doc_image.png)
 
 ## License
-[MIT](LICENSE)
-
+[BSD-2-Clause](LICENSE)
