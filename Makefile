@@ -21,4 +21,12 @@ mandelbrot: $(OBJECTS)
 clean:
 	rm -f mandelbrot $(OBJECTS)
 
-.PHONY: all options clean
+install: all
+	mkdir -p $(DESTDIR)$(PREFIX)/bin
+	cp -f mandelbrot $(DESTDIR)$(PREFIX)/bin
+	chmod +x $(DESTDIR)$(PREFIX)/bin/mandelbrot
+
+uninstall:
+	rm -f $(DESTDIR)$(PREFIX)/bin/mandelbrot
+
+.PHONY: all options clean install uninstall

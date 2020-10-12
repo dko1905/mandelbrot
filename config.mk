@@ -5,6 +5,9 @@ VERBOSE = 1
 # Customize to fit your system
 PKG_CONFIG = pkg-config
 
+# Paths
+PREFIX = /usr/local
+
 # Includes and libs
 INCS = `$(PKG_CONFIG) --cflags libpng` \
        `$(PKG_CONFIG) --cflags zlib`

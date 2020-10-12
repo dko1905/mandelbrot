@@ -15,4 +15,6 @@ jobs:
       run: sudo apt install libpng-dev zlib1g-dev gcc make -y
     - name: Run make to compile
       run: make
+    - name: Install & uninstall
+      run: make install && make uninstall || exit 1
       
