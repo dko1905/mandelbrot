@@ -16,5 +16,5 @@ jobs:
     - name: Run make to compile
       run: make
     - name: Install & uninstall
-      run: make install && make uninstall || exit 1
+      run: export DESTDIR="./" && make install && make uninstall || exit 1
       
