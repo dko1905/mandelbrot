@@ -51,29 +51,29 @@ static const char *err_usage = "Usage: mandelbrot <output filename> <width> \
 #endif
 
 // License
-static const char *license = "Copyright (c) 2020, Daniel Florescu \n\
-All rights reserved. \n\
+static const char *license = "Copyright (c) 2020, Daniel Florescu\n\
+All rights reserved.\n\
 \n\
-Redistribution and use in source and binary forms, with or without \n\
-modification, are permitted provided that the following conditions are met: \n\
+Redistribution and use in source and binary forms, with or without\n\
+modification, are permitted provided that the following conditions are met:\n\
 \n\
- * Redistributions of source code must retain the above copyright notice, \n\
-   this list of conditions and the following disclaimer. \n\
- * Redistributions in binary form must reproduce the above copyright \n\
-   notice, this list of conditions and the following disclaimer in the \n\
-   documentation and/or other materials provided with the distribution. \n\
+ * Redistributions of source code must retain the above copyright notice,\n\
+   this list of conditions and the following disclaimer.\n\
+ * Redistributions in binary form must reproduce the above copyright\n\
+   notice, this list of conditions and the following disclaimer in the\n\
+   documentation and/or other materials provided with the distribution.\n\
 \n\
-THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY \n\
-EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED \n\
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE \n\
-DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY \n\
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES \n\
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR \n\
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER \n\
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT \n\
-LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY \n\
-OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH \n\
-DAMAGE. \n";
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR AND CONTRIBUTORS ``AS IS'' AND ANY\n\
+EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED\n\
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE\n\
+DISCLAIMED. IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR ANY\n\
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES\n\
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR\n\
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER\n\
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT\n\
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY\n\
+OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH\n\
+DAMAGE.\n";
 
 void hsv_to_rgb(uint_fast16_t H, double S, double V, uint8_t out[3]);
 int render_png(
