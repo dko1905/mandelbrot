@@ -6,12 +6,14 @@
 #endif
 
 // Setup flags
-#ifndef PTHREAD_SUPPORTED
+#ifndef USE_PTHREAD 
 #ifdef __unix__
 #define PTHREAD_SUPPORTED 1
 #else
 #define PTHREAD_SUPPORTED 0
 #endif
+#else
+#define PTHREAD_SUPPORTED USE_PTHREAD
 #endif
 
 #ifndef VERBOSE

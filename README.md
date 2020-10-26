@@ -27,16 +27,16 @@ To get the version and license run the program with `-v`.
 
 ## Configuration
 ### `config.mk` options (makefile variables):
-| Name       | Default value | Description                                                                          |
-|------------|---------------|--------------------------------------------------------------------------------------|
-| VERBOSE    | 1             | This changes the verboseness of the program.                                         |
-| VERSION    | <version>     | This changes the version printed when running the program. Any string is acceptable. |
-| PKG\_CONFIG| pkg-config    | This changes the binary that is used for pkg-config.                                 |
-| PREFIX     | /usr/local    | This changes where the binary is installed to. ( /usr/local/bin )                    |
+| Name         | Default value   | Description                                                                          |
+|--------------|-----------------|--------------------------------------------------------------------------------------|
+| VERBOSE      | 1               | This changes the verboseness of the program.                                         |
+| VERSION      | <version>       | This changes the version printed when running the program. Any string is acceptable. |
+| PKG\_CONFIG  | pkg-config      | This changes the binary that is used for pkg-config.                                 |
+| PREFIX       | /usr/local      | This changes where the binary is installed to. ( /usr/local/bin )                    |
+| USE\_PTHREAD | depends on arch | This forces the compiler to use or not use pthreads.                                 |
 ### Compiler options (enviroment variables):
 | Name              | Default value   | Description                                              |
 |-------------------|-----------------|----------------------------------------------------------|
-| PTHREAD_SUPPORTED | Depends on OS   | You can set this to force using one or multiple threads. |
 | CC                | Depends on make | You can set this to force a specific compiler.           |
 | CPPFLAGS          | Empty           | C preprocessor flags                                     |
 | CFLAGS            | Depends on make | C compiler flags                                         |

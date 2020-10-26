@@ -1,6 +1,7 @@
 # Mandelbrot version
 VERSION = 0.1.3
 VERBOSE = 1
+#USE_PTHREAD = 0 # Force pthread usage
 
 # Customize to fit your system
 PKG_CONFIG = pkg-config
@@ -16,7 +17,7 @@ LIBS = -lm -pthread \
        `$(PKG_CONFIG) --libs zlib`
 
 # Flags
-MYCPPFLAGS = `if ! [ -z "$(PTHREAD_SUPPORTED)" ]; then echo -n -DPTHREAD_SUPPORTED=$(PTHREAD_SUPPORTED); fi` \
+MYCPPFLAGS = `if [ ! -z $(USE_PTHREAD) ]; then echo -n -DUSE_PTHREAD=$(USE_PTHREAD); fi` \
              -DVERBOSE=$(VERBOSE) \
              -DVERSION=\"$(VERSION)\" # My Preprocessor
 MYCFLAGS = -std=c99 -Wall -Wextra -pedantic \
