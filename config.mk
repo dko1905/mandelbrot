@@ -23,4 +23,3 @@ MYCPPFLAGS = `if [ ! -z $(USE_PTHREAD) ]; then echo -n -DUSE_PTHREAD=$(USE_PTHRE
 MYCFLAGS = -std=c99 -Wall -Wextra -pedantic \
            $(INCS) $(MYCPPFLAGS) $(CPPFLAGS) $(CFLAGS) # My C-flags
 MYLDFLAGS = $(LIBS) $(LDFLAGS) # My LD flags
-
