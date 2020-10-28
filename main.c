@@ -315,7 +315,7 @@ int render_png(
 
 	// Allocate array of rows
 	row_parr = png_malloc(png_ptr, height * sizeof(png_byte *));
-#if VERBOSE == 1
+#if VERBOSE == 1 && PTHREAD_SUPPORTED == 1
 	progress_arr = malloc(sizeof(double*) * thread_count);
 	if(progress_arr == NULL){
 		goto progress_failure;
