@@ -20,6 +20,20 @@
 #define VERBOSE 1
 #endif
 
+// Cross platform sleep
+#if VERBOSE == 1
+#ifdef WIN32
+#include <synchapi.h>
+#define cpsleep(ms) Sleep(ms)
+#else
+#include <time.h>
+#define cpsleep(ms) struct timespec ts;\
+	ts.tv_sec = ms / 1000;\
+	ts.tv_nsec = (ms % 1000) * 1000000;\
+	nanosleep(&ts, NULL);
+#endif
+#endif
+
 #ifndef VERSION
 #define VERSION "Something went wrong with version!"
 #endif
@@ -162,6 +176,7 @@ struct renderfuncparam{
 	size_t iterations;
 	int cpid; // Current pid
 	int mpid; // Max pid
+	double *progress; // Current progress of thread (only used with VERBOSE)
 };
 
 void *renderfunc(void *rawparam){
@@ -183,6 +198,7 @@ void *renderfunc(void *rawparam){
 	png_byte *row;
 	double yhso = 0; // Y, height, scale, offset 
 	double xwso = 0; // X, width, scale, offset 
+	double *progress = param->progress;
 
 	for(y = 0 + cpid; y < height; y += mpid){
 		row = png_calloc(png_ptr, sizeof(uint8_t) * width * 3); // 3 is RGB
@@ -212,8 +228,14 @@ void *renderfunc(void *rawparam){
 				hsv_to_rgb((steps * 10) % 255, 1, 1, row);
 			row += 3;
 		}
+		#if VERBOSE == 1
+		*progress = (double)y/height * 100;
+		#endif
 	}
-	
+	#if VERBOSE == 1
+	*progress = 100;
+	#endif
+
 	return NULL;
 }
 
@@ -243,6 +265,11 @@ int render_png(
 	struct renderfuncparam *customparam = NULL;
 	int cr = 0; // Create thread result
 	int jr = 0; // Join thread result
+#if VERBOSE == 1
+	double **progress_arr = NULL;
+	double avg_progress = 0;
+	size_t pcp = 0; // Progress count pointers
+#endif
 #else
 	double x_adj = 0, y_adj = 0;
 	complex double point = 0, z = 0;
@@ -269,7 +296,7 @@ int render_png(
 	}
 
 	// Setup error handling
-	if (setjmp(png_jmpbuf(png_ptr))){
+	if(setjmp(png_jmpbuf(png_ptr))){
 		goto png_failure;
 	}
 
@@ -288,6 +315,19 @@ int render_png(
 
 	// Allocate array of rows
 	row_parr = png_malloc(png_ptr, height * sizeof(png_byte *));
+#if VERBOSE == 1
+	progress_arr = malloc(sizeof(double*) * thread_count);
+	if(progress_arr == NULL){
+		goto progress_failure;
+	}
+	// Allocate array of progress pointers
+	for(pcp = 0; pcp < thread_count; ++pcp){
+		progress_arr[pcp] = malloc(sizeof(double));
+		if(progress_arr[pcp] == NULL){
+			goto progress_failure;
+		}
+	}
+#endif
 #if PTHREAD_SUPPORTED == 0
 	(void)thread_count;
 	// Performance tweaking
@@ -335,7 +375,8 @@ int render_png(
 		.scale = scale,
 		.iterations = iterations,
 		.cpid = 0,
-		.mpid = 0
+		.mpid = 0,
+		.progress = NULL
 	};
 
 	// Alocate array for pthread handles, and on for parameters.
@@ -349,6 +390,9 @@ int render_png(
 
 		customparam->cpid = tc;
 		customparam->mpid = thread_count;
+		#if VERBOSE == 1
+		customparam->progress = progress_arr[tc];
+		#endif
 
 		cr = pthread_create(&pthreads[tc], NULL, renderfunc, (void *)customparam);
 		if(cr < 0){
@@ -357,13 +401,24 @@ int render_png(
 		}
 	}
 
+	// Display progress
+#if PTHREAD_SUPPORTED == 1 && VERBOSE == 1
+	while(avg_progress != 100.0){
+		avg_progress = 0;
+		for(pcp = 0; pcp < thread_count; ++pcp){
+			avg_progress += *progress_arr[pcp];
+		}
+		avg_progress /= thread_count;
+		printf("%.2f%%\n", avg_progress);
+		cpsleep(100);
+	}
+#endif
 	for(tc = 0; tc < thread_count; ++tc){
 		jr = pthread_join(pthreads[tc], NULL);
 		if(jr < 0){
 			perror("Failed to join pthread, continuing");
 		}
 	}
-
 #endif
 
 	// Write image to file
@@ -386,6 +441,16 @@ int render_png(
 pthread_failure:
 	free(pthreads);
 	free(customparam_arr);
+	// Clean progress
+#if VERBOSE == 1
+progress_failure:
+	for(pcp = 0; pcp < thread_count; ++pcp){
+		if(progress_arr[pcp] != NULL){
+			free(progress_arr[pcp]);
+		}
+	}
+	free(progress_arr);
+#endif
 #endif
 
 	// Clean other stuff
