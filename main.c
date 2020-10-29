@@ -21,7 +21,7 @@
 #endif
 
 // Cross platform sleep
-#if VERBOSE == 1
+#if VERBOSE == 1 && PTHREAD_SUPPORTED == 1
 #ifdef WIN32
 #include <synchapi.h>
 #define cpsleep(ms) Sleep(ms)
